@@ -1,4 +1,7 @@
 
+using BookingsystemAPI.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace BookingsystemAPI
 {
     public class Program
@@ -13,6 +16,8 @@ namespace BookingsystemAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddDbContext<BookingsystemDbContext>( options => options.UseSqlServer(builder.Configuration.GetConnectionString("Connection")));
 
             var app = builder.Build();
 
