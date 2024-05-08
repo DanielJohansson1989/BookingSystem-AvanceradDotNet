@@ -42,6 +42,10 @@ namespace BookingsystemAPI
 
             app.UseHttpsRedirection();
 
+            // UseRouting och UseAuthentication är tillagda av mig men de verkar inte föra något
+            app.UseRouting();
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
 
