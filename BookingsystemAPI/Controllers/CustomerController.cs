@@ -10,8 +10,8 @@ namespace BookingsystemAPI.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
-        private readonly IBookingsystem<Customer> _bookingsystem;
-        public CustomerController(IBookingsystem<Customer> bookingsystem)
+        private readonly ICustomer<Customer> _bookingsystem;
+        public CustomerController(ICustomer<Customer> bookingsystem)
         {
             _bookingsystem = bookingsystem;
         }
@@ -30,7 +30,7 @@ namespace BookingsystemAPI.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Customer>> GetSingleCustomer(int id)
+        public async Task<ActionResult<CustomerDTO>> GetSingleCustomer(int id)
         {
             try
             {
@@ -47,7 +47,25 @@ namespace BookingsystemAPI.Controllers
             }
         }
 
-        [HttpPut("{id:int}")]
+        [HttpGet("{startDate:datetime},{endDate:datetime}")]
+        public async Task<ActionResult<Customer>> GetCustomersByAppointmentDate(DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                var result = await _bookingsystem.GetCustomersByDate(startDate, endDate);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        /*[HttpPut("{id:int}")]
         public async Task<ActionResult<Customer>> UpdateCustomer(int id, Customer customer)
         {
             try
@@ -68,9 +86,9 @@ namespace BookingsystemAPI.Controllers
 
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-        }
+        }*/
 
-        [HttpPost]
+        /*[HttpPost]
         public async Task<ActionResult<Customer>> CreateCustomer(Customer customer)
         {
             try
@@ -86,9 +104,9 @@ namespace BookingsystemAPI.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-        }
+        }*/
 
-        [HttpDelete]
+        /*[HttpDelete("{id:int}")]
         public async Task<ActionResult<Customer>> DeleteCustomer(int id)
         {
             try
@@ -104,6 +122,6 @@ namespace BookingsystemAPI.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-        }
+        }*/
     }
 }

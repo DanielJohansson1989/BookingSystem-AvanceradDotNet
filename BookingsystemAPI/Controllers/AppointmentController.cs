@@ -9,19 +9,32 @@ namespace BookingsystemAPI.Controllers
     [ApiController]
     public class AppointmentController : ControllerBase
     {
-        private readonly IBookingsystem<Appointment> _bookingsystem;
-        public AppointmentController(IBookingsystem<Appointment> bookingsystem)
+        private readonly IAppointment<Appointment> _bookingsystem;
+        public AppointmentController(IAppointment<Appointment> bookingsystem)
         {
             _bookingsystem = bookingsystem;
         }
 
-        [HttpGet]
+        /*[HttpGet, Authorize]
         public async Task<IActionResult> GetAllAppointments()
         {
             try
             {
                 return Ok(await _bookingsystem.GetAll());
             }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }*/
+        [HttpGet("{companyId:int},{startDate:datetime},{endDate:datetime}")]
+        public async Task<IActionResult> GetAppointmentsByCompany(int companyId, DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                return Ok(await _bookingsystem.GetByCompanyAndDate(companyId, startDate, endDate));
+                
+        }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
@@ -46,6 +59,19 @@ namespace BookingsystemAPI.Controllers
             }
         }
 
+        [HttpGet("{startDate:DateTime},{endDate:DateTime},{customerId:int}")]
+        public async Task<IActionResult> GetHours(DateTime startDate, DateTime endDate, int customerId)
+        {
+            try
+            {
+                return Ok(await _bookingsystem.GetHours(startDate, endDate, customerId));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
         [HttpPut("{id:int}")]
         public async Task<ActionResult<Appointment>> UpdateAppointment(int id, Appointment appointment)
         {
@@ -55,7 +81,7 @@ namespace BookingsystemAPI.Controllers
                 {
                     return BadRequest();
                 }
-                var appointmentToUpdate = _bookingsystem.GetById(id);
+                var appointmentToUpdate = await _bookingsystem.GetById(id);
                 if (appointmentToUpdate == null)
                 {
                     return NotFound();

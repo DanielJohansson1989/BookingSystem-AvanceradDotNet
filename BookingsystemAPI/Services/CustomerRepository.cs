@@ -7,16 +7,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookingsystemAPI.Services
 {
-    public class CustomerRepository : IBookingsystem<Customer>
+    public class CustomerRepository : ICustomer<Customer>
     {
         private readonly BookingsystemDbContext _dbContext;
-        
-        public CustomerRepository(BookingsystemDbContext dbContext) 
+        private readonly IMapper _mapper;
+        public CustomerRepository(BookingsystemDbContext dbContext, IMapper mapper) 
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
-        public async Task<Customer> Add(Customer entity)
+        /*public async Task<Customer> Add(Customer entity)
         {
             if (entity != null)
             {
@@ -25,9 +26,9 @@ namespace BookingsystemAPI.Services
                 return entity;
             }
             return null;
-        }
+        }*/
 
-        public async Task<Customer> Delete(int id)
+        /*public async Task<Customer> Delete(int id)
         {
             var result = await _dbContext.Customer.FirstOrDefaultAsync(c => c.CustomerId == id);
             if (result != null)
@@ -37,7 +38,7 @@ namespace BookingsystemAPI.Services
                 return result;
             }
             return null;
-        }
+        }*/
 
         public async Task<ICollection<Customer>> GetAll()
         {
@@ -49,7 +50,7 @@ namespace BookingsystemAPI.Services
             return await _dbContext.Customer.Include(c => c.Appointment).FirstOrDefaultAsync(c => c.CustomerId == id);
         }
 
-        public async Task<Customer> Update(Customer entity)
+       /* public async Task<Customer> Update(Customer entity)
         {
             var customerToUpdate = await _dbContext.Customer.FirstOrDefaultAsync(c => c.CustomerId == entity.CustomerId);
             if (customerToUpdate != null)
@@ -62,6 +63,15 @@ namespace BookingsystemAPI.Services
                 return entity;
             }
             return null;
+        }*/
+
+        public async Task<ICollection<Customer>> GetCustomersByDate(DateTime start, DateTime end)
+        {
+            var result = await _dbContext.Appointment
+                .Where(a => a.AppointmentStart >= start && a.AppointmentEnd <= end)
+                .Select(a => a.Customer).Distinct().ToListAsync();
+
+            return result;
         }
     }
 }
