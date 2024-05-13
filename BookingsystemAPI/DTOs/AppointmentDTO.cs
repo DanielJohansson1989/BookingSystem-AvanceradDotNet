@@ -9,9 +9,9 @@ namespace BookingsystemAPI.DTOs
         public DateTime AppointmentStart { get; set; }
         [Required]
         public DateTime AppointmentEnd { get; set; }
-        public int CustomerId { get; set; }
-        public int CompanyId { get; set; }
-        public Customer Customer { get; set; }
-        public Company Company { get; set; }
+        //public int CustomerId { get; set; }
+        //public int CompanyId { get; set; }
+        //public Customer Customer { get; set; }
+        //public Company Company { get; set; }
     }
 }
