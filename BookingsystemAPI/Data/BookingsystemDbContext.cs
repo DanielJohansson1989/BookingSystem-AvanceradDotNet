@@ -13,6 +13,7 @@ namespace BookingsystemAPI.Data
         public DbSet<Customer> Customer { get; set; }
         public DbSet<Company> Company { get; set; }
         public DbSet<Appointment> Appointment { get; set; }
+        public DbSet<History> History { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
