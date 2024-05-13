@@ -20,7 +20,7 @@ namespace BookingsystemAPI.Services
                 
                 await _dbContext.History.AddAsync(new History
                 {
-                    ChangeType = ChangeType.Create,
+                    ChangeType = "Create",
                     ChangeTime = DateTime.Now,
                     AppointmentId = createdEntity.Entity.AppointmentId,
                     NewValueAppointmentStart = createdEntity.Entity.AppointmentStart,
@@ -42,7 +42,7 @@ namespace BookingsystemAPI.Services
                 _dbContext.Appointment.Remove(result);
                 await _dbContext.History.AddAsync(new History
                 {
-                    ChangeType = ChangeType.Delete,
+                    ChangeType = "Delete",
                     ChangeTime = DateTime.Now,
                     AppointmentId = result.AppointmentId,
                     OldValueAppointmentStart = result.AppointmentStart,
@@ -75,7 +75,7 @@ namespace BookingsystemAPI.Services
             {
                 await _dbContext.History.AddAsync(new History
                 {
-                    ChangeType = ChangeType.Update,
+                    ChangeType = "Update",
                     ChangeTime = DateTime.Now,
                     AppointmentId = appointmentToUpdate.AppointmentId,
                     OldValueAppointmentStart = appointmentToUpdate.AppointmentStart,
