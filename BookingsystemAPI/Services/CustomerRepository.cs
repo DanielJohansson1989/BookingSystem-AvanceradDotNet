@@ -40,9 +40,24 @@ namespace BookingsystemAPI.Services
             return null;
         }*/
 
-        public async Task<ICollection<Customer>> GetAll()
+        public async Task<ICollection<Customer>> GetAll(string sortBy = "CustomerId")
         {
-            return await _dbContext.Customer.ToListAsync();
+            IQueryable<Customer> query = _dbContext.Customer;
+
+            switch (sortBy.ToLower())
+            {
+                case "firstname":
+                    query = query.OrderBy(x => x.FirstName);
+                    break;
+                case "lastname":
+                    query = query.OrderBy(x => x.LastName);
+                    break;
+                default:
+                    query = query.OrderBy(x => x.CustomerId);
+                    break;
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<Customer> GetById(int id)

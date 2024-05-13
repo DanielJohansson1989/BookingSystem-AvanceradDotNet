@@ -17,11 +17,11 @@ namespace BookingsystemAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCustomers()
+        public async Task<IActionResult> GetAllCustomers(string sortBy = "CustomerId")
         {
             try
             {
-                return Ok(await _bookingsystem.GetAll());
+                return Ok(await _bookingsystem.GetAll(sortBy));
             }
             catch (Exception ex)
             {
