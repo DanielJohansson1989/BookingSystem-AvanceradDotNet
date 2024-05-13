@@ -1,9 +1,10 @@
 ﻿using BookingsystemModels;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingsystemAPI.Data
 {
-    public class BookingsystemDbContext : DbContext
+    public class BookingsystemDbContext : DbContext // För authorization låt klassen ärva IdentityDbContext och Man kan lägga till <IdentityUser> och override ..se video
     {
         public BookingsystemDbContext(DbContextOptions<BookingsystemDbContext> options) : base(options)
         {

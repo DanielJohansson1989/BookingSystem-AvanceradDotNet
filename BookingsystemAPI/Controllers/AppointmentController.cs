@@ -1,5 +1,6 @@
 ﻿using BookingsystemAPI.Services;
 using BookingsystemModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,7 +35,7 @@ namespace BookingsystemAPI.Controllers
             {
                 return Ok(await _bookingsystem.GetByCompanyAndDate(companyId, startDate, endDate));
                 
-        }
+            }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
