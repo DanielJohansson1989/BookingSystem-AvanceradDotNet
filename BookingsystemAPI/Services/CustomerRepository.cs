@@ -62,7 +62,7 @@ namespace BookingsystemAPI.Services
 
         public async Task<Customer> GetById(int id)
         {
-            return await _dbContext.Customer.Include(c => c.Appointment).FirstOrDefaultAsync(c => c.CustomerId == id);
+            return await _dbContext.Customer.Include(c => c.Appointment.OrderBy(a => a.AppointmentStart)).FirstOrDefaultAsync(c => c.CustomerId == id);
         }
 
        /* public async Task<Customer> Update(Customer entity)
