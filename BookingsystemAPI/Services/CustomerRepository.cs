@@ -80,13 +80,25 @@ namespace BookingsystemAPI.Services
             return null;
         }*/
 
-        public async Task<ICollection<Customer>> GetCustomersByDate(DateTime start, DateTime end)
+        public async Task<ICollection<Customer>> GetCustomersByDate(DateTime start, DateTime end, string sortBy)
         {
-            var result = await _dbContext.Appointment
+            IQueryable<Customer> result = _dbContext.Appointment
                 .Where(a => a.AppointmentStart >= start && a.AppointmentEnd <= end)
-                .Select(a => a.Customer).Distinct().ToListAsync();
+                .Select(a => a.Customer).Distinct();
 
-            return result;
+            switch (sortBy.ToLower())
+            {
+                case "firstname":
+                    result = result.OrderBy(x => x.FirstName);
+                    break;
+                case "lastname":
+                    result = result.OrderBy(x => x.LastName);
+                    break;
+                default:
+                    result = result.OrderBy(x => x.CustomerId);
+                    break;
+            }
+            return await result.ToListAsync();
         }
     }
 }

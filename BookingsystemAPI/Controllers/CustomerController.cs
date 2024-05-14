@@ -48,11 +48,11 @@ namespace BookingsystemAPI.Controllers
         }
 
         [HttpGet("{startDate:datetime},{endDate:datetime}")]
-        public async Task<ActionResult<Customer>> GetCustomersByAppointmentDate(DateTime startDate, DateTime endDate)
+        public async Task<ActionResult<Customer>> GetCustomersByAppointmentDate(DateTime startDate, DateTime endDate, string sortBy = "CustomerId")
         {
             try
             {
-                var result = await _bookingsystem.GetCustomersByDate(startDate, endDate);
+                var result = await _bookingsystem.GetCustomersByDate(startDate, endDate, sortBy);
                 if (result == null)
                 {
                     return NotFound();

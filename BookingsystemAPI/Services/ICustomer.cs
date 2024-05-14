@@ -9,6 +9,6 @@ namespace BookingsystemAPI.Services
         /*Task<T> Add(T entity);
         Task<T> Update(T entity);
         Task<T> Delete(int id);*/
-        Task<ICollection<T>> GetCustomersByDate(DateTime start, DateTime end);
+        Task<ICollection<T>> GetCustomersByDate(DateTime start, DateTime end, string sortBy);
     }
 }
