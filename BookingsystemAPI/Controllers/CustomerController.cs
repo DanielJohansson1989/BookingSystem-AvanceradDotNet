@@ -17,11 +17,13 @@ namespace BookingsystemAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCustomers(string sortBy = "CustomerId")
+        public async Task<IActionResult> GetAllCustomers(string sortBy = "CustomerId", string filterByFirstName = null, string filterByLastName = null, string filterByEmail = null, string filterByPhone = null)
         {
             try
             {
-                return Ok(await _bookingsystem.GetAll(sortBy));
+                var result = await _bookingsystem.GetAll(sortBy, filterByFirstName, filterByLastName, filterByEmail, filterByPhone);
+                if (result == null) { return NotFound(); }
+                return Ok(result);
             }
             catch (Exception ex)
             {

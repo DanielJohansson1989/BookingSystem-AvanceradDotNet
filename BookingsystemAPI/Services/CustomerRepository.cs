@@ -4,6 +4,7 @@ using BookingsystemAPI.DTOs;
 using BookingsystemModels;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BookingsystemAPI.Services
 {
@@ -40,24 +41,46 @@ namespace BookingsystemAPI.Services
             return null;
         }*/
 
-        public async Task<ICollection<Customer>> GetAll(string sortBy = "CustomerId")
+        public async Task<ICollection<Customer>> GetAll(string sortBy = "CustomerId", string filterByFirstName = null, string filterByLastName = null, string filterByEmail = null, string filterByPhone = null)
         {
             IQueryable<Customer> query = _dbContext.Customer;
 
             switch (sortBy.ToLower())
             {
                 case "firstname":
-                    query = query.OrderBy(x => x.FirstName);
+                    query = query.OrderBy(c => c.FirstName);
                     break;
                 case "lastname":
-                    query = query.OrderBy(x => x.LastName);
+                    query = query.OrderBy(c => c.LastName);
                     break;
                 default:
-                    query = query.OrderBy(x => x.CustomerId);
+                    query = query.OrderBy(c => c.CustomerId);
                     break;
             }
 
-            return await query.ToListAsync();
+            if (!string.IsNullOrEmpty(filterByFirstName))
+            {
+                query = query.Where(c => c.FirstName.Contains(filterByFirstName));
+            }
+            if (!string.IsNullOrEmpty(filterByLastName))
+            {
+                query = query.Where(c => c.LastName.Contains(filterByLastName));
+            }
+            if (!string.IsNullOrEmpty(filterByEmail))
+            {
+                query = query.Where(c => c.EmailAddress.Contains(filterByEmail));
+            }
+            if (!string.IsNullOrEmpty(filterByPhone))
+            {
+                query = query.Where(c => c.PhoneNumber.Contains(filterByPhone));
+            }
+            
+            var result = await query.ToListAsync();
+            if (!result.IsNullOrEmpty())
+            {
+                return result;
+            }
+            return null;
         }
 
         public async Task<Customer> GetById(int id)
