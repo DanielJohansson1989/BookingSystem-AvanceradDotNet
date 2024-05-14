@@ -3,6 +3,7 @@ using BookingsystemModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BookingsystemAPI.Controllers
 {
@@ -29,11 +30,13 @@ namespace BookingsystemAPI.Controllers
             }
         }*/
         [HttpGet("{companyId:int},{startDate:datetime},{endDate:datetime}")]
-        public async Task<IActionResult> GetAppointmentsByCompany(int companyId, DateTime startDate, DateTime endDate)
+        public async Task<IActionResult> GetAppointmentsByCompany(int companyId, DateTime startDate, DateTime endDate, string sortBy = "startdate")
         {
             try
             {
-                return Ok(await _bookingsystem.GetByCompanyAndDate(companyId, startDate, endDate));
+                var result = await _bookingsystem.GetByCompanyAndDate(companyId, startDate, endDate, sortBy);
+                if (result.IsNullOrEmpty()) return NotFound();
+                return Ok(result);
                 
             }
             catch (Exception ex)

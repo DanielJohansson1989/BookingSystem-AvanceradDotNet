@@ -1,6 +1,7 @@
 ﻿using BookingsystemAPI.Data;
 using BookingsystemModels;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http.Headers;
 
 namespace BookingsystemAPI.Services
 {
@@ -56,11 +57,24 @@ namespace BookingsystemAPI.Services
             return null;
         }
 
-        public async Task<ICollection<Appointment>> GetByCompanyAndDate(int companyId, DateTime startDate, DateTime endDate)
+        public async Task<ICollection<Appointment>> GetByCompanyAndDate(int companyId, DateTime startDate, DateTime endDate, string sortBy = "startDate")
         {
-            return await _dbContext.Appointment
-                .Where(a => a.CompanyId == companyId && a.AppointmentStart >= startDate && a.AppointmentEnd <= endDate)
-                .ToListAsync();
+            IQueryable<Appointment> query = _dbContext.Appointment
+                .Where(a => a.CompanyId == companyId && a.AppointmentStart >= startDate && a.AppointmentEnd <= endDate);
+                //.OrderBy(a => a.AppointmentStart) //Ändra så att man kan sortera på startdatum eller customer id
+                //.ToListAsync();
+            switch (sortBy.ToLower())
+            {
+                case "customerid":
+                    query = query.OrderBy(a => a.CustomerId);
+                    break;
+                default:
+                    query = query.OrderBy(a => a.AppointmentStart); 
+                    break;
+            }
+            var result = await query.ToListAsync();
+            if (result == null) return null;
+            return result;
         }
 
         public async Task<Appointment> GetById(int id)
@@ -102,6 +116,7 @@ namespace BookingsystemAPI.Services
         {
             var result = await _dbContext.Appointment
                 .Where(a => a.AppointmentStart >= start && a.AppointmentEnd <= end && a.CustomerId == customerId)
+                .OrderBy(a => a.AppointmentStart)
                 .ToListAsync();
 
             /*double hours = 0;

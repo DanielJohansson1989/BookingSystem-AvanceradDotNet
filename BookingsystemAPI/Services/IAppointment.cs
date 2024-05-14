@@ -6,7 +6,7 @@ namespace BookingsystemAPI.Services
 {
     public interface IAppointment<T>
     {
-        Task<ICollection<T>> GetByCompanyAndDate(int companyId, DateTime startDate, DateTime endDate);
+        Task<ICollection<T>> GetByCompanyAndDate(int companyId, DateTime startDate, DateTime endDate, string sortBy);
         Task<T> GetById(int id);
         Task<T> Add(T entity);
         Task<T> Update(T entity);
