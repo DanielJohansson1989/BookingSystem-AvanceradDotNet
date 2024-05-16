@@ -12,7 +12,7 @@ namespace BookingsystemModels
     {
         [Key]
         public int HistoryId { get; set; }
-        [Required]
+        [Required, StringLength(10)]
         public string ChangeType { get; set; }
         [Required]
         public DateTime ChangeTime { get; set; }

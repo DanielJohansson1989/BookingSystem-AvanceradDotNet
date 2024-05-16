@@ -3,6 +3,7 @@ using BookingsystemAPI.Data;
 using BookingsystemAPI.DTOs;
 using BookingsystemAPI.Services;
 using BookingsystemModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -21,17 +22,7 @@ namespace BookingsystemAPI
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen(options =>
-            {
-                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-                {
-                    In = ParameterLocation.Header,
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey,
-                });
-
-                options.OperationFilter<SecurityRequirementsOperationFilter>();
-            });
+            builder.Services.AddSwaggerGen();
             builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
             builder.Services.AddScoped<ICustomer<Customer>,CustomerRepository>();
             builder.Services.AddScoped<IAppointment<Appointment>, AppointmentRepository>();
@@ -46,9 +37,11 @@ namespace BookingsystemAPI
             builder.Services.AddDbContext<BookingsystemDbContext>( options => options.UseSqlServer(builder.Configuration.GetConnectionString("Connection")));
 
             builder.Services.AddAuthorization();
+            builder.Services.AddAuthentication();
 
-            //builder.Services.AddIdentityApiEndpoints<IdentityUser>()
-                //.AddEntityFrameworkStores<BookingsystemDbContext>();
+            builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<BookingsystemDbContext>();
 
             var app = builder.Build();
 
@@ -59,7 +52,7 @@ namespace BookingsystemAPI
                 app.UseSwaggerUI();
             }
             
-            //app.MapIdentityApi<IdentityUser>(); // Tillag av mig för identifiering
+            app.MapIdentityApi<IdentityUser>(); 
 
             app.UseHttpsRedirection();
 

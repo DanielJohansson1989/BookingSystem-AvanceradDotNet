@@ -1,5 +1,6 @@
 ﻿using BookingsystemAPI.Services;
 using BookingsystemModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,7 @@ namespace BookingsystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class HistoryController : ControllerBase
     {
         private readonly IHistory<History> _bookingsystem;

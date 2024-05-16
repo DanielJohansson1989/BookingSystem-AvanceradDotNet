@@ -1,6 +1,7 @@
 ﻿using BookingsystemAPI.DTOs;
 using BookingsystemAPI.Services;
 using BookingsystemModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,7 @@ namespace BookingsystemAPI.Controllers
             _bookingsystem = bookingsystem;
         }
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllCustomers(string sortBy = "CustomerId", string filterByFirstName = null, string filterByLastName = null, string filterByEmail = null, string filterByPhone = null)
         {
             try
@@ -31,7 +32,7 @@ namespace BookingsystemAPI.Controllers
             }
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Admin")]
         public async Task<ActionResult<CustomerDTO>> GetSingleCustomer(int id)
         {
             try
@@ -49,7 +50,7 @@ namespace BookingsystemAPI.Controllers
             }
         }
 
-        [HttpGet("{startDate:datetime},{endDate:datetime}")]
+        [HttpGet("{startDate:datetime},{endDate:datetime}"), Authorize(Roles = "Admin")]
         public async Task<ActionResult<Customer>> GetCustomersByAppointmentDate(DateTime startDate, DateTime endDate, string sortBy = "CustomerId")
         {
             try

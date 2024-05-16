@@ -17,19 +17,7 @@ namespace BookingsystemAPI.Controllers
             _bookingsystem = bookingsystem;
         }
 
-        /*[HttpGet, Authorize]
-        public async Task<IActionResult> GetAllAppointments()
-        {
-            try
-            {
-                return Ok(await _bookingsystem.GetAll());
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }*/
-        [HttpGet("{companyId:int},{startDate:datetime},{endDate:datetime}")]
+        [HttpGet("{companyId:int},{startDate:datetime},{endDate:datetime}"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAppointmentsByCompany(int companyId, DateTime startDate, DateTime endDate, string sortBy = "startdate")
         {
             try
@@ -45,7 +33,7 @@ namespace BookingsystemAPI.Controllers
             }
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Admin, User")]
         public async Task<ActionResult<Appointment>> GetSingleAppointment(int id)
         {
             try
@@ -63,7 +51,7 @@ namespace BookingsystemAPI.Controllers
             }
         }
 
-        [HttpGet("{startDate:DateTime},{endDate:DateTime},{customerId:int}")]
+        [HttpGet("{startDate:DateTime},{endDate:DateTime},{customerId:int}"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetHours(DateTime startDate, DateTime endDate, int customerId)
         {
             try
@@ -76,7 +64,7 @@ namespace BookingsystemAPI.Controllers
             }
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}"), Authorize(Roles = "Admin, User")]
         public async Task<ActionResult<Appointment>> UpdateAppointment(int id, Appointment appointment)
         {
             try
@@ -99,7 +87,7 @@ namespace BookingsystemAPI.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Admin, User")]
         public async Task<ActionResult<Appointment>> CreateAppointment(Appointment appointment)
         {
             try
@@ -117,7 +105,7 @@ namespace BookingsystemAPI.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete, Authorize(Roles = "Admin, User")]
         public async Task<ActionResult<Appointment>> DeleteAppointment(int id)
         {
             try
