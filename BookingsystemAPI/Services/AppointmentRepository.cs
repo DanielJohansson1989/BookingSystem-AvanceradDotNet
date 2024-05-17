@@ -1,23 +1,28 @@
-﻿using BookingsystemAPI.Data;
+﻿using AutoMapper;
+using BookingsystemAPI.Data;
+using BookingsystemAPI.DTOs;
 using BookingsystemModels;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Headers;
 
 namespace BookingsystemAPI.Services
 {
-    public class AppointmentRepository : IAppointment<Appointment>
+    public class AppointmentRepository : IAppointment
     {
         private readonly BookingsystemDbContext _dbContext;
-        public AppointmentRepository(BookingsystemDbContext dbContext)
+        private readonly IMapper _mapper;
+        public AppointmentRepository(BookingsystemDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
-        public async Task<Appointment> Add(Appointment entity)
+        public async Task<AppointmentDTO> Add(AppointmentCreateDTO entity)
         {
             if (entity != null)
             {
-                var createdEntity = await _dbContext.Appointment.AddAsync(entity);
-                //await _dbContext.SaveChangesAsync();
+                var appointment = _mapper.Map<Appointment>(entity);
+                var createdEntity = await _dbContext.Appointment.AddAsync(appointment);
+                await _dbContext.SaveChangesAsync();
                 
                 await _dbContext.History.AddAsync(new History
                 {
@@ -30,12 +35,12 @@ namespace BookingsystemAPI.Services
                     NewValueCompanyId = createdEntity.Entity.CompanyId
                 });
                 await _dbContext.SaveChangesAsync();
-                return entity;
+                return _mapper.Map<AppointmentDTO>(createdEntity.Entity);
             }
             return null;
         }
 
-        public async Task<Appointment> Delete(int id)
+        public async Task<AppointmentDTO> Delete(int id)
         {
             var result = await _dbContext.Appointment.FirstOrDefaultAsync(a => a.AppointmentId == id);
             if (result != null)
@@ -52,17 +57,16 @@ namespace BookingsystemAPI.Services
                     OldValueCompanyId = result.CompanyId
                 });
                 await _dbContext.SaveChangesAsync();
-                return result;
+                return _mapper.Map<AppointmentDTO>(result);
             }
             return null;
         }
 
-        public async Task<ICollection<Appointment>> GetByCompanyAndDate(int companyId, DateTime startDate, DateTime endDate, string sortBy = "startDate")
+        public async Task<ICollection<AppointmentDTO>> GetByCompanyAndDate(int companyId, DateTime startDate, DateTime endDate, string sortBy = "startDate")
         {
             IQueryable<Appointment> query = _dbContext.Appointment
                 .Where(a => a.CompanyId == companyId && a.AppointmentStart >= startDate && a.AppointmentEnd <= endDate);
-                //.OrderBy(a => a.AppointmentStart) //Ändra så att man kan sortera på startdatum eller customer id
-                //.ToListAsync();
+
             switch (sortBy.ToLower())
             {
                 case "customerid":
@@ -74,17 +78,18 @@ namespace BookingsystemAPI.Services
             }
             var result = await query.ToListAsync();
             if (result == null) return null;
-            return result;
+            return _mapper.Map<ICollection<AppointmentDTO>>(result);
         }
 
-        public async Task<Appointment> GetById(int id)
+        public async Task<AppointmentDTO> GetById(int id)
         {
-            return await _dbContext.Appointment.Include(a => a.Customer).FirstOrDefaultAsync(a => a.AppointmentId == id);
+            return _mapper.Map<AppointmentDTO>(await _dbContext.Appointment.Include(a => a.Customer).FirstOrDefaultAsync(a => a.AppointmentId == id));
         }
 
-        public async Task<Appointment> Update(Appointment entity)
+        public async Task<AppointmentDTO> Update(AppointmentDTO entityDTO)
         {
-            var appointmentToUpdate = await _dbContext.Appointment.FirstOrDefaultAsync(a => a.AppointmentId == entity.AppointmentId);
+            Appointment entity = _mapper.Map<Appointment>(entityDTO);
+            var appointmentToUpdate = await _dbContext.Appointment.FirstOrDefaultAsync(a => a.AppointmentId == entityDTO.AppointmentId);
             if (appointmentToUpdate != null)
             {
                 await _dbContext.History.AddAsync(new History
@@ -107,12 +112,12 @@ namespace BookingsystemAPI.Services
                 appointmentToUpdate.CompanyId = entity.CompanyId;
 
                 await _dbContext.SaveChangesAsync();
-                return entity;
+                return entityDTO;
             }
             return null;
         }
 
-        public async Task<ICollection<Appointment>> GetHours(DateTime start, DateTime end, int customerId)
+        public async Task<ICollection<AppointmentDTO>> GetHours(DateTime start, DateTime end, int customerId)
         {
             var result = await _dbContext.Appointment
                 .Where(a => a.AppointmentStart >= start && a.AppointmentEnd <= end && a.CustomerId == customerId)
@@ -126,7 +131,7 @@ namespace BookingsystemAPI.Services
                 hours += timeDifference.TotalHours;                
             }
             return hours;*/
-            return result;
+            return _mapper.Map<ICollection<AppointmentDTO>>(result);
         }
     }
 }

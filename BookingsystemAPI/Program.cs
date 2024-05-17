@@ -25,7 +25,7 @@ namespace BookingsystemAPI
             builder.Services.AddSwaggerGen();
             builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
             builder.Services.AddScoped<ICustomer<Customer>,CustomerRepository>();
-            builder.Services.AddScoped<IAppointment<Appointment>, AppointmentRepository>();
+            builder.Services.AddScoped<IAppointment, AppointmentRepository>();
             builder.Services.AddScoped<IHistory<History>, HistoryRepository>();
 
             builder.Services.AddControllers().AddJsonOptions(options =>

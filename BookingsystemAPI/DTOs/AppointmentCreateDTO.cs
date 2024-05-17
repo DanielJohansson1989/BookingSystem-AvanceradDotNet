@@ -1,11 +1,7 @@
-﻿using BookingsystemModels;
-using System.ComponentModel.DataAnnotations;
-
-namespace BookingsystemAPI.DTOs
+﻿namespace BookingsystemAPI.DTOs
 {
-    public class AppointmentDTO
+    public class AppointmentCreateDTO
     {
-        public int AppointmentId { get; set; }
         public DateTime AppointmentStart { get; set; }
         public DateTime AppointmentEnd { get; set; }
         public int CustomerId { get; set; }

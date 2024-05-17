@@ -11,7 +11,7 @@ namespace BookingsystemModels
     {
         [Key]
         public int AppointmentId { get; set; }
-        [StringLength(450)]
+        //[StringLength(450)]
         //public string? OwnerId { get; set; } // ForeignKey from AspNetUser table
         [Required]
         public DateTime AppointmentStart { get; set; }

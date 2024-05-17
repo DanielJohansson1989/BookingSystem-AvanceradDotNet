@@ -11,6 +11,7 @@ namespace BookingsystemAPI
             CreateMap<Appointment, AppointmentDTO>().ReverseMap();
             CreateMap<Company, CompanyDTO>().ReverseMap();
             CreateMap<Customer, CustomerDTO>().ReverseMap();
+            CreateMap<Appointment, AppointmentCreateDTO>().ReverseMap();
         }
     }
 }

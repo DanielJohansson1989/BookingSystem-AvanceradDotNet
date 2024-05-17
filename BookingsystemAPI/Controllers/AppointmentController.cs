@@ -1,4 +1,5 @@
-﻿using BookingsystemAPI.Services;
+﻿using BookingsystemAPI.DTOs;
+using BookingsystemAPI.Services;
 using BookingsystemModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -11,8 +12,8 @@ namespace BookingsystemAPI.Controllers
     [ApiController]
     public class AppointmentController : ControllerBase
     {
-        private readonly IAppointment<Appointment> _bookingsystem;
-        public AppointmentController(IAppointment<Appointment> bookingsystem)
+        private readonly IAppointment _bookingsystem;
+        public AppointmentController(IAppointment bookingsystem)
         {
             _bookingsystem = bookingsystem;
         }
@@ -34,7 +35,7 @@ namespace BookingsystemAPI.Controllers
         }
 
         [HttpGet("{id:int}"), Authorize(Roles = "Admin, User")]
-        public async Task<ActionResult<Appointment>> GetSingleAppointment(int id)
+        public async Task<ActionResult<AppointmentDTO>> GetSingleAppointment(int id)
         {
             try
             {
@@ -65,14 +66,10 @@ namespace BookingsystemAPI.Controllers
         }
 
         [HttpPut("{id:int}"), Authorize(Roles = "Admin, User")]
-        public async Task<ActionResult<Appointment>> UpdateAppointment(int id, Appointment appointment)
+        public async Task<ActionResult<AppointmentDTO>> UpdateAppointment(int id, AppointmentDTO appointment)
         {
             try
             {
-                if (id != appointment.AppointmentId)
-                {
-                    return BadRequest();
-                }
                 var appointmentToUpdate = await _bookingsystem.GetById(id);
                 if (appointmentToUpdate == null)
                 {
@@ -88,7 +85,7 @@ namespace BookingsystemAPI.Controllers
         }
 
         [HttpPost, Authorize(Roles = "Admin, User")]
-        public async Task<ActionResult<Appointment>> CreateAppointment(Appointment appointment)
+        public async Task<ActionResult<AppointmentDTO>> CreateAppointment(AppointmentCreateDTO appointment)
         {
             try
             {
@@ -106,7 +103,7 @@ namespace BookingsystemAPI.Controllers
         }
 
         [HttpDelete, Authorize(Roles = "Admin, User")]
-        public async Task<ActionResult<Appointment>> DeleteAppointment(int id)
+        public async Task<ActionResult<AppointmentDTO>> DeleteAppointment(int id)
         {
             try
             {
