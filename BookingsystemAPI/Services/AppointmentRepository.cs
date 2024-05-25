@@ -65,7 +65,7 @@ namespace BookingsystemAPI.Services
         public async Task<ICollection<AppointmentDTO>> GetByCompanyAndDate(int companyId, DateTime startDate, DateTime endDate, string sortBy = "startDate")
         {
             IQueryable<Appointment> query = _dbContext.Appointment
-                .Where(a => a.CompanyId == companyId && a.AppointmentStart >= startDate && a.AppointmentEnd <= endDate);
+                .Where(a => a.CompanyId == companyId && a.AppointmentStart >= startDate && a.AppointmentEnd <= endDate).Include(a => a.Customer);
 
             switch (sortBy.ToLower())
             {

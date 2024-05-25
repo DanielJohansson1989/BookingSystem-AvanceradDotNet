@@ -8,7 +8,10 @@ namespace BookingsystemAPI
     {
         public AutoMapperProfile()
         {
-            CreateMap<Appointment, AppointmentDTO>().ReverseMap();
+            CreateMap<Appointment, AppointmentDTO>()
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.Customer.FirstName))
+                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.Customer.LastName))
+                .ReverseMap();
             CreateMap<Company, CompanyDTO>().ReverseMap();
             CreateMap<Customer, CustomerDTO>().ReverseMap();
             CreateMap<Appointment, AppointmentCreateDTO>().ReverseMap();
